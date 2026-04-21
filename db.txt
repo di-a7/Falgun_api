@@ -1,0 +1,47 @@
+# Restaurant Management System:
+
+# api: django, django rest framework
+# database: postgresql
+
+# Database:
+# table: Field: datatype
+
+User:
+- name (CharField)
+- email (EmailField, unique)
+- phone (intField, max_length=10)
+- address (TextField, blank=True)
+- role (CharField, max_length=20)  # e.g., 'Customer', 'Staff', 'Admin'
+
+MenuItem:
+- name (CharField)
+- category (CharField, max_length=50)
+- price (floatField)
+
+Order:
+- User (ForeignKey)
+- order_date (DateTimeField)
+- status (CharField, max_length=20)['Pending','Completed','Delivered']
+- total_amount (floatField)
+
+OrderItem:
+- Order (ForeignKey)
+- menu_item (ForeignKey in MenuItem)
+- quantity (PositiveIntegerField)
+- subtotal (DecimalField, max_digits=8)
+
+Payment:
+- order_amount (intField)
+- method (CharField, max_length=20)
+- payment_date (DateTimeField)
+
+Table:
+- table_number (IntegerField, unique)
+- capacity (IntegerField)
+- status (CharField, default="Available")
+
+Reservation:
+- customer -ForeignKey 
+- table_number -  IntegerField 
+- date_time - DateTimeField 
+- status - CharField
