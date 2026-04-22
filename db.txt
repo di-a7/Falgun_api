@@ -31,7 +31,7 @@ OrderItem:
 - subtotal (DecimalField, max_digits=8)
 
 Payment:
-- order_amount (intField)
+- order (ForeignKey)
 - method (CharField, max_length=20)
 - payment_date (DateTimeField)
 
