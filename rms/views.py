@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from .models import *
-from .serializers import CategorySerializer
+from .serializers import CategorySerializer, MenuSerializer
 from rest_framework.serializers import ValidationError
 from rest_framework import status
 # Create your views here.
@@ -12,12 +12,17 @@ class CategoryModelViewset(ModelViewSet):
    serializer_class = CategorySerializer
    
    def destroy(self, request, *args, **kwargs):
-      category = self.get_object()
-      item = OrderItem.objects.filter(menu__category = category).count()
+      category = self.get_object()#break
+      item = OrderItem.objects.filter(menu__category = category).count()# 5
       if item > 0:
          raise ValidationError({"details":"Data can not be deleted. Category relate to OrderItem"})
       category.delete()
       return Response({"detail":"Data has been deleted."})
+
+
+class MenuModelViewset(ModelViewSet):
+   queryset = Menu.objects.all()     
+   serializer_class = MenuSerializer
 
 
 # Viewset
