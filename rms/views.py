@@ -5,20 +5,69 @@ from .serializers import CategorySerializer
 from rest_framework.serializers import ValidationError
 from rest_framework import status
 # Create your views here.
-# Class Base view
-# Mixins and generic API
-from rest_framework import mixins
-from rest_framework import generics
-
-class CategoryGenericView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
-   queryset = Category.objects.all()
+# ModelViewset
+from rest_framework.viewsets import ModelViewSet
+class CategoryModelViewset(ModelViewSet):
+   queryset = Category.objects.all()     
    serializer_class = CategorySerializer
    
-   def get(self, request):
-      return self.list(self,request)
+   def destroy(self, request, *args, **kwargs):
+      category = self.get_object()
+      item = OrderItem.objects.filter(menu__category = category).count()
+      if item > 0:
+         raise ValidationError({"details":"Data can not be deleted. Category relate to OrderItem"})
+      category.delete()
+      return Response({"detail":"Data has been deleted."})
+
+
+# Viewset
+# from rest_framework import viewsets
+
+# class CategoryViewset(viewsets.ViewSet):
+#    def list(self, request):
+#       category = Category.objects.all()     
+#       serializer = CategorySerializer(category, many=True)           
+#       return Response(serializer.data, status=status.HTTP_200_OK)
    
-   def post(self,request):
-      return self.create(self,request)
+#    def create(self,request):
+#       serializer = CategorySerializer(data = request.data)      
+#       serializer.is_valid(raise_exception=True)
+#       serializer.save()
+#       return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# class CategoryDetailViewset(viewsets.ViewSet):
+#    def retrieve(self,request, pk):
+#       category = Category.objects.get(pk = pk)
+#       serializer = CategorySerializer(category)           
+#       return Response(serializer.data)
+
+
+
+
+
+# Class Base view
+# Mixins and generic API
+# from rest_framework import mixins
+# from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
+# class CategoryGenericView(ListCreateAPIView):
+#    queryset = Category.objects.all()
+#    serializer_class = CategorySerializer
+
+
+# class CategoryDetailView(RetrieveUpdateDestroyAPIView):
+#    queryset = Category.objects.all()
+#    serializer_class = CategorySerializer
+   
+#    def delete(self, request, *args, **kwargs):
+#       item = OrderItem.objects.filter(menu__category = self.get_object()).count()
+#       if item > 0:
+#          raise ValidationError({"details":"Data can not be deleted. Category relate to OrderItem"})
+#       return self.destroy(request, *args, **kwargs)
+      # return Response({"detail":"Data has been deleted."})
+
+
 
 # create a class that handles retrieve, update, destroy using generic and mixin
 
