@@ -4,6 +4,11 @@ from .models import *
 from .serializers import CategorySerializer, MenuSerializer
 from rest_framework.serializers import ValidationError
 from rest_framework import status
+# from rest_framework.pagination import PageNumberPagination
+from .paginations import MenuPagination
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import MenuFilter
 # Create your views here.
 # ModelViewset
 from rest_framework.viewsets import ModelViewSet
@@ -21,8 +26,13 @@ class CategoryModelViewset(ModelViewSet):
 
 
 class MenuModelViewset(ModelViewSet):
-   queryset = Menu.objects.all()     
+   queryset = Menu.objects.select_related('category').all()     
    serializer_class = MenuSerializer
+   pagination_class = MenuPagination
+   filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+   search_fields = ['name']      # Menu.objects.filter()
+   # filterset_fields = ['category']
+   filterset_class = MenuFilter
 
 
 # Viewset
