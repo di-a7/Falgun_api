@@ -9,16 +9,19 @@ from .paginations import MenuPagination
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import MenuFilter
+# from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from .permissions import IsAuthenticatedorReadOnly
 # Create your views here.
 # ModelViewset
 from rest_framework.viewsets import ModelViewSet
 class CategoryModelViewset(ModelViewSet):
    queryset = Category.objects.all()     
    serializer_class = CategorySerializer
+   permission_classes = [IsAuthenticatedorReadOnly]
    
    def destroy(self, request, *args, **kwargs):
       category = self.get_object()#break
-      item = OrderItem.objects.filter(menu__category = category).count()# 5
+      item = OrderItem.objects.filter(menu__category = category).count()
       if item > 0:
          raise ValidationError({"details":"Data can not be deleted. Category relate to OrderItem"})
       category.delete()
@@ -33,6 +36,8 @@ class MenuModelViewset(ModelViewSet):
    search_fields = ['name']      # Menu.objects.filter()
    # filterset_fields = ['category']
    filterset_class = MenuFilter
+   permission_classes = [IsAuthenticatedorReadOnly]
+   
 
 
 # Viewset
