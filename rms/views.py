@@ -14,10 +14,20 @@ from .permissions import IsAuthenticatedorReadOnly
 # Create your views here.
 # ModelViewset
 from rest_framework.viewsets import ModelViewSet
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
+
 class CategoryModelViewset(ModelViewSet):
    queryset = Category.objects.all()     
    serializer_class = CategorySerializer
    permission_classes = [IsAuthenticatedorReadOnly]
+   
+   @extend_schema(
+      parameters=[OpenApiParameter(name='name', description='Name of the category', type=OpenApiTypes.STR)],
+      description='this handles category list',
+   )
+   def list(self, request, *args, **kwargs):
+      return super().list(request, *args, **kwargs)
    
    def destroy(self, request, *args, **kwargs):
       category = self.get_object()#break
