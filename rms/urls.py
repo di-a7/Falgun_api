@@ -5,6 +5,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register('category', CategoryModelViewset, basename='category')
 router.register('menu', MenuModelViewset, basename='menu')
+router.register('order', OrderModelViewset, basename='order')
 urlpatterns = [
    # path('category/', CategoryModelViewset.as_view({'get':'list','post':'create'})),
    # path('category/<pk>/', CategoryModelViewset.as_view({'get':'retrieve','put':'update','delete':'destroy'}))

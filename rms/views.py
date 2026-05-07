@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from .models import *
-from .serializers import CategorySerializer, MenuSerializer
+from .serializers import *
 from rest_framework.serializers import ValidationError
 from rest_framework import status
 # from rest_framework.pagination import PageNumberPagination
@@ -47,7 +47,16 @@ class MenuModelViewset(ModelViewSet):
    # filterset_fields = ['category']
    filterset_class = MenuFilter
    permission_classes = [IsAuthenticatedorReadOnly]
-   
+
+
+class OrderModelViewset(ModelViewSet):
+   queryset = Order.objects.all()     
+   serializer_class = OrderSerializer
+   permission_classes = [IsAuthenticatedorReadOnly]
+   pagination_class = MenuPagination
+   filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+   search_fields = ['user__username']
+   filterset_fields = ['status','payment_status']
 
 
 # Viewset
